@@ -20,9 +20,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .gluonts.torch.distributions import DistributionOutput
-from .gluonts.torch.scaler import MeanScaler, NOPScaler, StdScaler
-from .gluonts.torch.util import lagged_sequence_values, unsqueeze_expand
+from gluonts.torch.distributions import DistributionOutput
+from gluonts.torch.scaler import MeanScaler, NOPScaler, StdScaler
+from gluonts.torch.util import lagged_sequence_values, unsqueeze_expand
 
 from .gluon_utils.scalers.robust_scaler import RobustScaler
 

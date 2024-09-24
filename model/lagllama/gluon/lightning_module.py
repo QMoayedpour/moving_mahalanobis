@@ -25,9 +25,9 @@ from gluonts.itertools import prod
 from gluonts.torch.modules.loss import DistributionLoss, NegativeLogLikelihood
 from gluonts.torch.util import repeat_along_dim, take_last
 
-from data_llama.augmentations.freq_mask import freq_mask
-from data_llama.augmentations.freq_mix import freq_mix
-from data_llama.augmentations.augmentations import (
+from model.lagllama.data_llama.augmentations.freq_mask import freq_mask
+from model.lagllama.data_llama.augmentations.freq_mix import freq_mix
+from model.lagllama.data_llama.augmentations.augmentations import (
     ApplyAugmentations,
     Jitter,
     MagnitudeWarp,
@@ -38,10 +38,10 @@ from data_llama.augmentations.augmentations import (
     WindowSlice,
     WindowWarp,
 )
-from gluon_utils.gluon_ts_distributions.implicit_quantile_network import (
+from model.lagllama.gluon_utils.gluon_ts_distributions.implicit_quantile_network import (
     ImplicitQuantileNetworkOutput,
 )
-from model.lag_llama import LagLlamaModel
+from model.lagllama.lag_llama import LagLlamaModel
 
 
 class LagLlamaLightningModule(LightningModule):

@@ -1,7 +1,8 @@
 torch
 pandas
 tqdm
-gluonts
+gluonts==0.14.4
 scikit-learn
 numpy
 matplotlib
+pytorch-lightning
