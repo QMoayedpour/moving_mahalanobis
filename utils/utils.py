@@ -382,3 +382,11 @@ def push_json(output_path, dic):
     with open(path, 'w') as json_file:
         json.dump(dic, json_file, indent=4)
     print(f"results saved @ {path}")
+
+
+def load_data(dataset="NAB"):
+
+    with open(f"./data/{dataset}_anomaly/{dataset}.json", "r") as file:
+        data = json.load(file)
+
+    return data
