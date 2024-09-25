@@ -27,6 +27,7 @@ class MovingMahalanobis:
         self.windows = False
         self.selection = "random"
         self.n_channels = n_channels
+        self.eps = 1e-4
 
     def set_params(self, **params):
         for param_name, param_value in params.items():
@@ -88,15 +89,15 @@ class MovingMahalanobis:
         covs = np.zeros((C, C, L))
 
         for i in range(L):
-            covs[:, :, i] = np.cov(vec[:, :, i].cpu().numpy(), rowvar=False, ddof=1) + 0.001 * np.eye(C)
+            covs[:, :, i] = np.cov(vec[:, :, i].cpu().numpy(), rowvar=False, ddof=1) + self.eps * np.eye(C)
 
         return means, covs
 
     def _calculate_distances(self, means, covs, samples):
         cov_invs = np.zeros_like(covs)
-        epsilon = 1e-3
+
         k = covs[:, :, 0].shape[0]
-        diagonal_values = np.full(k, epsilon)
+        diagonal_values = np.full(k, self.eps)
         diagonal_matrix = np.diag(diagonal_values)
 
         for i in range(cov_invs.shape[2]):
