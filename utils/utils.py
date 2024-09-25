@@ -299,10 +299,82 @@ def adjust_score(arr, k=8, l=120):
     return result
 
 
+def split_arrays_ano(X_large, y_large, seq_len=120, stride=120, test_size=0.5, random_state=42,
+                     split=False):
+    """take arrays to split subarrays for test and train. Train contains 0 sub array with anomaly
+
+    Args:
+        X_large (np.array): Value 1d array
+        y_large (np.array): Labels 1d array
+        seq_len (int): Size of sub arrays
+        stride (int): stride
+        split (bool): to put anomalies or not in the train set
+
+    Returns:
+        datasets: X_train, y_train, X_test, y_test
+    """
+    X = []
+    y = []
+    y_mask = []
+    for i in range(0, len(X_large) - seq_len, stride):
+        X.append(X_large[i:i+seq_len])
+        y.append(y_large[i:i+seq_len])
+        y_mask.append(int(y_large[i:i+seq_len].sum()))
+    X = np.stack(X, axis=0)
+    y = np.stack(y, axis=0)
+    y_mask = np.stack(y_mask, axis=0)
+
+    scaler = MinMaxScaler()
+    X_shape = X.shape
+    X = scaler.fit_transform(X.reshape(-1, X_shape[-1])).reshape(X_shape)
+
+    X_train, X_test, y_train, y_test, y_train_mask, y_test_mask = train_test_split(
+        X, y, y_mask, test_size=test_size, random_state=random_state, shuffle=False
+    )
+    if split:
+        class_to_keep, class_to_remove = 0,  1
+
+        mask_train = y_train_mask == class_to_keep
+        mask_train_remove = y_train_mask >= class_to_remove
+
+        X_train_healthy = X_train[mask_train]
+        y_train_healthy = y_train[mask_train]
+
+        X_train_anomaly = X_train[mask_train_remove]
+        y_train_anomaly = y_train[mask_train_remove]
+        X_test = np.concatenate((X_train_anomaly, X_test), axis=0)
+        y_test = np.concatenate((y_train_anomaly, y_test), axis=0)
+    else:
+        X_train_healthy = X_train
+        y_train_healthy = y_train
+    return (X_train_healthy, y_train_healthy, X_test, y_test)
+
+
+def flatten_data(data):
+    new_dic = {}
+    for key in data.keys():
+        X_train = np.array(data[key]["X_train"])
+        X_test = np.array(data[key]["X_test"])
+
+        y_train = np.array(data[key]["y_train"])
+        y_test = np.array(data[key]["y_test"])
+
+        new_dic[key] = {"X": np.concatenate([X_train, X_test]).flatten(),
+                        "y": np.concatenate([y_train, y_test]).flatten()}
+    return new_dic
+
+
 def normalise(array, to_list=False):
     arr = np.array(array)
     normalised = (arr - arr.min())/(arr.max() - arr.min())
     return normalised.tolist() if to_list else normalised
+
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 
 def push_json(output_path, dic):

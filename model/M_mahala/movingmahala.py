@@ -11,25 +11,35 @@ from tqdm import tqdm
 
 
 class MovingMahalanobis:
-    def __init__(self, y, dataloader, model_name="LagLlama", X=None, seq_len=32):
+    def __init__(self, y, dataloader, model_name="LagLlama", n_channels=16, X=None, seq_len=32):
         self.y = y
         self.model_name = model_name
         self.dataloader = dataloader
         self.seq_len = seq_len
-        self.X = X.flatten()[(10 + 1) * seq_len:] if isinstance(X, np.ndarray) else X
+        self.X = np.array(X).flatten()#[(10 + 1) * seq_len:] if isinstance(X, np.ndarray) else X
         self.trained = True
         self.score = None
         self.labels = None
+        self.print_results = False
+        self.thresh = 10
+        self.verbose = False
+        self.modif_score = False,
+        self.windows = False
+        self.selection = "random"
+        self.n_channels = n_channels
 
-    def fit(self, print_results=False, thresh=10, verbose=False, modif_score=False,
-            windows=False, selection="random", n_channels=16, mode_auto=True):
+    def set_params(self, **params):
+        for param_name, param_value in params.items():
+            setattr(self, param_name, param_value)
 
-        assert selection in ["random", "coreset", "n_firsts"]
+    def fit(self):
+
+        assert self.selection in ["random", "coreset", "n_firsts"]
         if self.model_name == "TS2Vec":
-            selection = "n_firsts"
-
+            self.selection = "n_firsts"
+        self.X = self.X[(self.thresh)*self.seq_len:]
         list_vec, dist_list, list_y = [], [], []
-        bar = tqdm(zip(self.dataloader, self.y), total=self.y.shape[0]) if verbose else zip(self.dataloader, self.y)
+        bar = tqdm(zip(self.dataloader, self.y), total=self.y.shape[0]) if self.verbose else zip(self.dataloader, self.y)
 
         for i, (x, y) in enumerate(bar, start=1):
             if i == 1:
@@ -38,12 +48,13 @@ class MovingMahalanobis:
             list_vec.append(torch.tensor(representation.reshape(representation.shape[0],
                                                                 representation.shape[2], -1),
                                                                 dtype=torch.float))
-            if len(list_vec) < thresh:
+            if len(list_vec) < self.thresh:
                 continue
 
-            if len(list_vec) == thresh:
-                selected_idx = self._select_indices(torch.cat(list_vec, dim=0), selection, n_channels)
+            if len(list_vec) == self.thresh:
+                selected_idx = self._select_indices(torch.cat(list_vec, dim=0), self.selection, self.n_channels)
                 list_vec = [tensor[:, selected_idx, :] for tensor in list_vec]
+                continue
 
             list_y.append(y)
             means, covs = self._calculate_means_covariance(torch.cat(list_vec, dim=0)[:-1,:,:])
@@ -52,13 +63,13 @@ class MovingMahalanobis:
         self.score = np.array(dist_list).squeeze(1)
 
         self.labels = np.concatenate(list_y)
-        self.score = self._apply_modified_score(modif_score, n_channels)
+        self.score = self._apply_modified_score(self.modif_score, self.n_channels)
         results = self._evaluate_results(self.score)
 
-        if print_results:
-            self._print_results(results, verbose)
+        if self.print_results:
+            self._print_results(results, self.verbose)
 
-        if windows:
+        if self.windows:
             return self._calculate_windows_results()
 
         return results
@@ -112,7 +123,7 @@ class MovingMahalanobis:
         return results
 
     def _print_results(self, results, verbose):
-        if verbose:
+        if self.verbose:
             plot_roc(self.labels[:], self.score)
         print(results)
 
