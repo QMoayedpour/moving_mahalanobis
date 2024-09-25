@@ -8,6 +8,7 @@ setup(
         'numpy',
         'pandas',
         'torch',
-        'scikit-learn'
+        'scikit-learn',
+        'tqdm'
     ]
 )
