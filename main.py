@@ -24,7 +24,7 @@ for model_name in config["models"]:
 
     out = eval_model(learner, model, data,
                      config["models"][model_name],
-                     loader, save_score=config["models"][model_name]["save_score"])
+                     loader)
 
     output_path_1 = config["globals"]["output_folder"] + f"/{model_name}_{dataset_name}.json"
     with open(output_path_1, "w") as file:

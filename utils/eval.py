@@ -37,10 +37,6 @@ def eval_model(learner, model, data, params, loader):
         Fonction ou classe qui transforme les données d'entrée 'X' en un format approprié pour l'évaluation 
         (par exemple, un DataLoader).
 
-    save_score : bool, optionnel (par défaut=False)
-        Si True, les scores et les labels pour chaque ensemble de données seront enregistrés dans un dictionnaire 
-        et retournés avec les résultats.
-
     Retour :
     -------
     list_res : dict
@@ -64,7 +60,7 @@ def eval_model(learner, model, data, params, loader):
         #evaluator.set_params(**params)
         list_res[key] = evaluator.fit()
 
-        if params["save_scores"]:
+        if params["save_score"]:
             list_scores[key] = {"scores": evaluator.score,
                                 "labels": evaluator.labels}
 

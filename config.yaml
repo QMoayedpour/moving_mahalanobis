@@ -5,7 +5,7 @@ globals:
 
 models:
   TS2Vec:
-    eval: True
+    eval: False
     model_name: "TS2Vec"
     seq_len: 32
     stride: 32
@@ -45,5 +45,5 @@ models:
     "test_size": 0.8
     device: "cuda"
     save_score: False
-    "epoch": 100
+    n_epoch: 100
 
