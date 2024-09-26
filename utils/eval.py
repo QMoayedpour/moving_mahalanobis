@@ -9,6 +9,7 @@ from model.M_mahala.movingmahala import MovingMahalanobis
 from model.lagllama.utils.lagllama_loader import create_lagllama_dataset
 from model.donut.donut import Donut
 from model.arma.arma import ArmAnomalyDetector
+from model.deepant.utils import DeepAntLearner
 
 
 def eval_model(learner, model, data, params, loader):
@@ -104,6 +105,14 @@ def prepare_for_eval(config):
     elif config["model_name"] == "Arma":
 
         learner = ArmAnomalyDetector
+
+        loader = useless
+
+        model = useless
+
+    elif config["model_name"] == "DeepAnt":
+
+        learner = DeepAntLearner
 
         loader = useless
 

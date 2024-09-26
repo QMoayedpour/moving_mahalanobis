@@ -48,7 +48,7 @@ models:
     n_epoch: 100
 
   Arma:
-    eval: True
+    eval: False
     model_name: "Arma"
     max_p: 5
     max_q: 5
@@ -57,3 +57,13 @@ models:
     save_score: False
     seq_len: 32
     device: None
+
+  DeepAnt:
+    eval: True
+    model_name: "DeepAnt"
+    n_epochs: 150
+    device: "cuda"
+    save_score: False
+    seq_len: 32
+    verbose: True
+    batch_size: 128
