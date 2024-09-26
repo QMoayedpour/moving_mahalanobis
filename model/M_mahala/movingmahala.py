@@ -11,7 +11,8 @@ from tqdm import tqdm
 
 
 class MovingMahalanobis:
-    def __init__(self, y, dataloader, model_name="LagLlama", n_channels=16, X=None, seq_len=32):
+    def __init__(self, y, dataloader, model_name="LagLlama", n_channels=16, X=None, seq_len=32,
+                 device="cuda", **kwargs):
         self.y = y
         self.model_name = model_name
         self.dataloader = dataloader
@@ -28,13 +29,12 @@ class MovingMahalanobis:
         self.selection = "random"
         self.n_channels = n_channels
         self.eps = 1e-4
-
-    def set_params(self, **params):
-        for param_name, param_value in params.items():
+        self.device = device
+        for param_name, param_value in kwargs.items():
             setattr(self, param_name, param_value)
 
     def fit(self):
-
+        self.y = create_windows(self.y, seq_len=self.seq_len, stride=self.seq_len)
         assert self.selection in ["random", "coreset", "n_firsts"]
         if self.model_name == "TS2Vec":
             self.selection = "n_firsts"
