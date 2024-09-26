@@ -8,6 +8,7 @@ from model.ts2vec.utils import create_ts2vec_dataset
 from model.M_mahala.movingmahala import MovingMahalanobis
 from model.lagllama.utils.lagllama_loader import create_lagllama_dataset
 from model.donut.donut import Donut
+from model.arma.arma import ArmAnomalyDetector
 
 
 def eval_model(learner, model, data, params, loader):
@@ -63,7 +64,7 @@ def eval_model(learner, model, data, params, loader):
         if params["save_score"]:
             list_scores[key] = {"scores": evaluator.score,
                                 "labels": evaluator.labels}
-
+        break
     return list_res, list_scores
 
 
@@ -92,12 +93,21 @@ def prepare_for_eval(config):
         model = config["model_path"]
 
     elif config["model_name"] == "Donut":
+
         learner = Donut
+
+        loader = useless  # Since the model doesnt need a specific loader, return a
+                          # function "useless" that doesnt have any atribute or anything
+
+        model = useless
+
+    elif config["model_name"] == "Arma":
+
+        learner = ArmAnomalyDetector
 
         loader = useless
 
         model = useless
-
     else:
         raise ValueError("No valids model names")
 
