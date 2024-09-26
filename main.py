@@ -1,6 +1,6 @@
 import yaml
 from utils.eval import eval_model, prepare_for_eval
-from utils.utils import load_data
+from utils.utils import load_data, NumpyEncoder
 import warnings
 import json
 warnings.filterwarnings('ignore')
@@ -28,9 +28,9 @@ for model_name in config["models"]:
 
     output_path_1 = config["globals"]["output_folder"] + f"/{model_name}_{dataset_name}.json"
     with open(output_path_1, "w") as file:
-        json.dump(out[0])
+        json.dump(out[0], file, indent=4, cls=NumpyEncoder)
 
     if config["models"][model_name]["save_score"]:
         output_path_2 = f"{config["globals"]["output_folder"]}/{model_name}_{dataset_name}_scores.json"
         with open(output_path_2, "w") as file:
-            json.dump(out[1])
+            json.dump(out[1], file, indent=4, cls=NumpyEncoder)

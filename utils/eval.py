@@ -2,14 +2,15 @@ import json
 import numpy as np
 from tqdm import tqdm
 import torch
-from utils.utils import create_windows
+from utils.utils import create_windows, useless
 from model.ts2vec.ts2vec import TS2Vec_Learner
 from model.ts2vec.utils import create_ts2vec_dataset
 from model.M_mahala.movingmahala import MovingMahalanobis
 from model.lagllama.utils.lagllama_loader import create_lagllama_dataset
+from model.donut.donut import Donut
 
 
-def eval_model(learner, model, data, params, loader, save_score=False):
+def eval_model(learner, model, data, params, loader):
     """
     Évalue un modèle sur un ensemble de données donné et retourne les résultats.
 
@@ -56,19 +57,17 @@ def eval_model(learner, model, data, params, loader, save_score=False):
     for key in tqdm(data.keys()):
         X = data[key]["X"]
         y = data[key]["y"]
-
-        dataset = loader(X, model, seq_len=params["seq_len"],
+        dataset = loader(x=X, model=model, seq_len=params["seq_len"],
                          stride=params["seq_len"], device=params["device"])
-        y = create_windows(y, seq_len=params["seq_len"], stride=params["seq_len"])
-        evaluator = learner(y, dataset, model_name=params["model_name"], 
-                            X=X, seq_len= params["seq_len"])
-        evaluator.set_params(**params)
+        #y = create_windows(y, seq_len=params["seq_len"], stride=params["seq_len"])
+        evaluator = learner(X=X, y=y, dataloader=dataset, **params)
+        #evaluator.set_params(**params)
         list_res[key] = evaluator.fit()
 
-        if save_score:
+        if params["save_scores"]:
             list_scores[key] = {"scores": evaluator.score,
                                 "labels": evaluator.labels}
-        break
+
     return list_res, list_scores
 
 
@@ -88,16 +87,22 @@ def prepare_for_eval(config):
         model.net.load_state_dict(torch.load(config["model_path"],
                                              map_location=torch.device(config["device"])))
 
-        return (learner, model, loader)
-
     elif config["model_name"] == "lagllama_mahala":
+
         learner = MovingMahalanobis
 
         loader = create_lagllama_dataset
 
         model = config["model_path"]
 
-        return (learner, model, loader)
+    elif config["model_name"] == "Donut":
+        learner = Donut
+
+        loader = useless
+
+        model = useless
 
     else:
         raise ValueError("No valids model names")
+
+    return (learner, model, loader)

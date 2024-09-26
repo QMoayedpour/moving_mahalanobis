@@ -204,6 +204,11 @@ def create_windows(array, seq_len=120, stride=120):
     return np.array(array_list)
 
 
+def reconstruct(array, seq_len=120, stride=120):
+    reconstructed = array[:,:stride].flatten()
+    return np.concatenate([reconstructed, array[-1,stride:]])
+
+
 def score_windows(labels, score, seq_len=120):
     labels = create_windows(labels, seq_len=seq_len, stride=seq_len)
     score = create_windows(score, seq_len=seq_len, stride=seq_len)
@@ -390,3 +395,7 @@ def load_data(dataset="NAB"):
         data = json.load(file)
 
     return data
+
+
+def useless(**params):
+    return
