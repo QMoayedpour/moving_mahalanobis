@@ -40,3 +40,15 @@ To run the model, choose the parameters on the file ``config.yaml`` and then run
 
 
 To run the other models, refer to the ``scripts_{model}`` folders and follow the instructions in the ``README.md`` file.
+
+# Print results
+
+When you run the script ``main.py``, the results and the scores (optional) will be store on the folder ``results``. Use:
+
+    ```
+    python print_results.py --path [path to json file of the results] --n_decimals [2]
+
+to display the scores on the consol. You can eval the model with another window size by running:
+
+    ```
+    python eval_from_scores.py --path [path to json file of the scores] --seq_len [custom sequence length]
