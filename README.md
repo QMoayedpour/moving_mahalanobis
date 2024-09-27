@@ -33,11 +33,12 @@ To handle data that is not in JSON format, follow the steps below:
 # Models
 
 To run the model, choose the parameters on the file ``config.yaml`` and then run:
-    ```bash
-    pip install -e .
+   ```bash
+   python ./{dataset}_anomaly/{dataset}_loader.py
 
-    ```bash
-    python main.py
+
+   ```bash
+   python main.py
 
 
 To run the other models, refer to the ``scripts_{model}`` folders and follow the instructions in the ``README.md`` file.
