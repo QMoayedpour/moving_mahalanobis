@@ -37,7 +37,6 @@ To run the model, choose the parameters on the file ``config.yaml`` and then run
     pip install -e .
 
     python main.py
-    ```
 
 
 To run the other models, refer to the ``scripts_{model}`` folders and follow the instructions in the ``README.md`` file.
