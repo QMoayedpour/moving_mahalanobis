@@ -29,16 +29,22 @@ To handle data that is not in JSON format, follow the steps below:
 
    ```bash
    python ./{dataset}_anomaly/{dataset}_loader.py
+   ```
 
 # Models
 
 To run the model, choose the parameters on the file ``config.yaml`` and then run:
+
+
+
    ```bash
    python ./{dataset}_anomaly/{dataset}_loader.py
+   ````
 
 
    ```bash
    python main.py
+   ```
 
 
 To run the other models, refer to the ``scripts_{model}`` folders and follow the instructions in the ``README.md`` file.
@@ -47,10 +53,12 @@ To run the other models, refer to the ``scripts_{model}`` folders and follow the
 
 When you run the script ``main.py``, the results and the scores (optional) will be store on the folder ``results``. Use:
 
-    ```bash
+```bash
     python print_results.py --path [path to json file of the results] --n_decimals [2]
+```
 
-to display the scores on the consol. You can eval the model with another window size by running:
+To display the scores on the consol. You can eval the model with another window size by running:
 
-    ```bash
+```bash
     python eval_from_scores.py --path [path to json file of the scores] --seq_len [custom sequence length]
+````
