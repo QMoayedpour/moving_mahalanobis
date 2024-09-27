@@ -72,3 +72,15 @@ class DeepAntDataset(Dataset):
     def __getitem__(self, idx):
         return (torch.tensor(self.sequence[idx], dtype=torch.float).permute(1, 0),
                 torch.tensor(self.labels[idx], dtype=torch.float))
+
+
+class LForecastDataset(Dataset):
+    def __init__(self, X, context_length):
+        self.X = X
+        self.context_length = context_length
+
+    def __len__(self):
+        return len(self.X) - self.context_length
+
+    def __getitem__(self, idx):
+        return self.X[idx: idx + self.context_length]

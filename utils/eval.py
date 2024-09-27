@@ -7,6 +7,7 @@ from model.ts2vec.ts2vec import TS2Vec_Learner
 from model.ts2vec.utils import create_ts2vec_dataset
 from model.M_mahala.movingmahala import MovingMahalanobis
 from model.lagllama.utils.lagllama_loader import create_lagllama_dataset
+from model.lagllama.lag_llama_forecast import LagLLamaForecastAno
 from model.donut.donut import Donut
 from model.arma.arma import ArmAnomalyDetector
 from model.deepant.utils import DeepAntLearner
@@ -92,6 +93,14 @@ def prepare_for_eval(config):
         loader = create_lagllama_dataset
 
         model = config["model_path"]
+    
+    elif config["model_name"] == "lagllama_forecast":
+
+        learner = LagLLamaForecastAno
+
+        loader = useless
+
+        model = useless
 
     elif config["model_name"] == "Donut":
 

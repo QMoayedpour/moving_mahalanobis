@@ -35,7 +35,18 @@ models:
     mode_auto: True
     n_channels : 16
     modif_score: False
+    selection: "coreset"
   
+  lagllama_forecast:
+    eval: True
+    model_name : "lagllama_forecast"
+    seq_len: 32
+    device: "cuda"
+    windows: True
+    verbose: True
+    save_score: False
+    model_path: "./model/lagllama/lag-llama.ckpt"
+
   Donut:
     eval: False
     model_name: "Donut"
@@ -59,7 +70,7 @@ models:
     device: None
 
   DeepAnt:
-    eval: True
+    eval: False
     model_name: "DeepAnt"
     n_epochs: 150
     device: "cuda"
@@ -67,3 +78,4 @@ models:
     seq_len: 32
     verbose: True
     batch_size: 128
+    windows: False
