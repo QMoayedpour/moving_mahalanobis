@@ -33,9 +33,10 @@ To handle data that is not in JSON format, follow the steps below:
 # Models
 
 To run the model, choose the parameters on the file ``config.yaml`` and then run:
-    ```
+    ```bash
     pip install -e .
 
+    ```bash
     python main.py
 
 
