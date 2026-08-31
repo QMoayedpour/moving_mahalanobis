@@ -62,3 +62,7 @@ To display the scores on the consol. You can eval the model with another window 
 ```bash
     python eval_from_scores.py --path [path to json file of the scores] --seq_len [custom sequence length]
 ````
+
+# Model presentation
+
+Please find a summary report of the project in ``summary_report.pdf`` and the full report (in French) in ``full_report (french).pdf``
